@@ -10,11 +10,72 @@ pinned: false
 
 # Cortex — AI Research & Knowledge Agent
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-cortex--660f.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://cortex-660f.onrender.com)
+[![Hosting Cost](https://img.shields.io/badge/Hosting_Cost-₹0%20%2F%20month-blue?style=for-the-badge)](https://cortex-660f.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python)](https://python.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791?style=for-the-badge&logo=postgresql)](https://github.com/pgvector/pgvector)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
 > A production-grade personal research and knowledge management platform featuring multi-source ingestion, hybrid vector/keyword retrieval, Reciprocal Rank Fusion (RRF), controlled agent tool execution loops, verifiable source citations, and empirical RAG benchmarking.
+> 
+> 🌐 **Public 24/7 Cloud Deployment:** **[https://cortex-660f.onrender.com](https://cortex-660f.onrender.com)**
 
 ---
 
-## 1. Project Overview & Problem Statement
+## 1. Zero-Cost Cloud Architecture (24/7 Live)
+
+Cortex is deployed on legitimate, permanent free-tier cloud infrastructure with **₹0/month** hosting costs:
+
+| Component | Platform / Service | Specifications | Cost |
+| :--- | :--- | :--- | :--- |
+| **Web UI & API Server** | [Render](https://render.com) | Unified Docker container (FastAPI + React SPA) | **₹0 / mo** |
+| **Vector Database** | [Supabase](https://supabase.com) | Dedicated PostgreSQL 16 + native `pgvector` | **₹0 / mo** |
+| **Task Queue & Cache** | [Upstash](https://upstash.com) | Serverless Redis 7 over TLS/SSL | **₹0 / mo** |
+| **AI LLM & Reasoning** | [Google AI Studio](https://aistudio.google.com) | Gemini 3 Flash Preview (1,500 req/day free) | **₹0 / mo** |
+| **Vector Embeddings** | [Google AI Studio](https://aistudio.google.com) | `gemini-embedding-001` (Dense 1536-dim vectors) | **₹0 / mo** |
+| **24/7 Keepalive Ping** | [cron-job.org](https://cron-job.org) | Automated 10-minute HTTP heartbeat to `/api/health` | **₹0 / mo** |
+
+```mermaid
+flowchart TD
+    User([Browser / Any Device]) <-->|HTTPS / SSL| WebService[Render Cloud Runtime\nReact SPA + FastAPI Backend]
+    
+    subgraph Render_Cloud ["Render Container (512 MB RAM, 0.1 vCPU)"]
+        FrontendSPA[Frontend SPA /assets\nReact 18 + Tailwind]
+        FastAPI[FastAPI REST Gateway\nPython 3.13]
+        CeleryWorker[Celery Background Worker\nDocument Chunker & Ingestion]
+        
+        FrontendSPA <-->|/api/*| FastAPI
+    end
+
+    subgraph Supabase_Cloud ["Supabase Dedicated Cloud (PostgreSQL 16)"]
+        SupabasePooler[IPv4 Session Pooler\nPort 5432]
+        PgVectorDB[(PostgreSQL 16 + pgvector\nDense Semantic Vectors <=>)]
+        FullText[(PostgreSQL Full-Text Search @@)]
+        
+        SupabasePooler <--> PgVectorDB
+        SupabasePooler <--> FullText
+    end
+
+    subgraph Upstash_Cloud ["Upstash Serverless Redis (Mumbai)"]
+        RedisQueue[(Redis 7 SSL / TLS\nCelery Broker & Cache)]
+    end
+
+    subgraph Google_AI ["Google AI Studio"]
+        GeminiLLM[Gemini 3 Flash Preview\n1,500 req/day free]
+        GeminiEmbed[gemini-embedding-001\nFree Vector Embeddings]
+    end
+
+    FastAPI <-->|SQL & Cosine Distance| SupabasePooler
+    CeleryWorker <-->|Queue & Tasks| RedisQueue
+    FastAPI <-->|Async Tasks| RedisQueue
+    FastAPI <-->|Inference & Citations| GeminiLLM
+    CeleryWorker <-->|Vector Ingestion| GeminiEmbed
+```
+
+---
+
+## 2. Project Overview & Problem Statement
 
 Modern researchers, software engineers, and knowledge workers face severe information fragmentation: critical insights are scattered across academic PDFs, web documentation, markdown notes, and local files. Standard generative AI chatbots suffer from knowledge hallucination, stale parameters, lack of verifiable source attribution, vulnerability to prompt injection, and uncontrolled autonomous loops.
 
@@ -27,7 +88,7 @@ Modern researchers, software engineers, and knowledge workers face severe inform
 
 ---
 
-## 2. System Architecture
+## 3. System Architecture
 
 ```mermaid
 flowchart TD
@@ -73,7 +134,7 @@ flowchart TD
 
 ---
 
-## 3. Data Flow Diagram
+## 4. Data Flow Diagram
 
 ```mermaid
 sequenceDiagram
@@ -107,7 +168,7 @@ sequenceDiagram
 
 ---
 
-## 4. Database Entity-Relationship Diagram
+## 5. Database Entity-Relationship Diagram
 
 ```mermaid
 erDiagram
@@ -186,7 +247,7 @@ erDiagram
 
 ---
 
-## 5. Technology Stack & Design Decisions
+## 6. Technology Stack & Design Decisions
 
 | Subsystem | Technology | Architectural Rationale |
 | :--- | :--- | :--- |
@@ -199,7 +260,7 @@ erDiagram
 
 ---
 
-## 6. Hybrid Search & Reciprocal Rank Fusion (RRF)
+## 7. Hybrid Search & Reciprocal Rank Fusion (RRF)
 
 Dense vector search alone often struggles with exact identifiers, codes, and acronyms, while keyword search struggles with conceptual synonyms. Cortex implements **Reciprocal Rank Fusion**:
 
@@ -214,7 +275,7 @@ Following fusion, candidates undergo a **Cross-Encoder Relevance Reranker** pass
 
 ---
 
-## 7. Empirical Evaluation Benchmark Results
+## 8. Empirical Evaluation Benchmark Results
 
 Cortex includes an automated benchmark framework executing test queries against ground truth technical corpora.
 
@@ -228,7 +289,7 @@ Cortex includes an automated benchmark framework executing test queries against 
 
 ---
 
-## 8. Local Setup & Installation
+## 9. Local Setup & Installation
 
 ### Prerequisites
 - Python 3.11+
@@ -267,7 +328,7 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## 9. Docker Deployment
+## 10. Docker Deployment
 
 Deploy the complete enterprise stack (PostgreSQL + pgvector, Redis, Celery, FastAPI, Nginx Frontend) with one command:
 
@@ -281,7 +342,7 @@ Access points:
 
 ---
 
-## 10. Automated Test Suite
+## 11. Automated Test Suite
 
 Run the full pytest suite (Auth, Ingestion, SSRF, pgvector/Keyword RRF, Agent Loops, Reports, Evaluations):
 ```bash
@@ -292,7 +353,7 @@ cd backend
 
 ---
 
-## 11. Core Computer Science Concepts for Interviews
+## 12. Core Computer Science Concepts for Interviews
 
 1. **Reciprocal Rank Fusion vs. Weighted Sum**: Why RRF does not require calibrating heterogeneous score distributions between cosine distance $[0, 2]$ and BM25 unbounded scores.
 2. **SSRF Mitigation in Production Ingestion Engines**: Why validating hostnames before HTTP requests is vulnerable to DNS Rebinding unless destination IP addresses are validated post-resolution on each redirect.
