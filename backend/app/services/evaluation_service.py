@@ -194,3 +194,4 @@ class EvaluationFramework:
 
         logger.info(f"Evaluation completed: Recall@K={mean_recall}, MRR={mean_mrr}, Latency={mean_latency}ms")
         return run
+

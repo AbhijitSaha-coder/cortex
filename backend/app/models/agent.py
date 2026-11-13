@@ -26,3 +26,4 @@ class AgentToolExecution(Base):
     __table_args__ = (
         Index("idx_tool_exec_user", "user_id", "created_at"),
     )
+

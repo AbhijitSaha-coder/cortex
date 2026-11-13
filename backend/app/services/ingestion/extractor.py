@@ -154,3 +154,4 @@ def extract_text_from_url(url: str, timeout_seconds: float = 10.0) -> Tuple[str,
     }
 
     return title, [(1, text)], metadata
+

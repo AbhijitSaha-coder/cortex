@@ -231,3 +231,4 @@ class AgentToolRegistry:
         except Exception as e:
             elapsed_ms = int((time.time() - start) * 1000)
             return {"status": "error", "error": str(e), "elapsed_ms": elapsed_ms}
+

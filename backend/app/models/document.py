@@ -77,3 +77,4 @@ class IngestionJob(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     document = relationship("Document", back_populates="ingestion_jobs")
+

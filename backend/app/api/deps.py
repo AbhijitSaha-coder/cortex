@@ -53,3 +53,4 @@ def get_current_superuser(
             detail="Superuser privileges required"
         )
     return current_user
+

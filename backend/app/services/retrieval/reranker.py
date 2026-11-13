@@ -48,3 +48,4 @@ class CrossEncoderReranker(BaseReranker):
 
         reranked.sort(key=lambda x: x["score"], reverse=True)
         return reranked[:top_k]
+

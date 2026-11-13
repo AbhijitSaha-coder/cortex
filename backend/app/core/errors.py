@@ -29,3 +29,4 @@ class IngestionError(CortexError):
 class SSRFSecurityError(CortexError):
     def __init__(self, message: str = "Access to private or non-routable IP addresses is forbidden"):
         super().__init__(message, status_code=400)
+

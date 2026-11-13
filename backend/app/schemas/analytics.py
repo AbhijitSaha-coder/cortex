@@ -19,3 +19,4 @@ class UsageSummaryResponse(BaseModel):
     estimated_cost_usd: float
     usage_by_type: Dict[str, int]
     recent_usage: List[Dict[str, Any]]
+

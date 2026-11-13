@@ -243,3 +243,4 @@ class IngestionPipeline:
             job.completed_at = datetime.now(timezone.utc)
             self.db.commit()
             raise IngestionError(error_msg)
+

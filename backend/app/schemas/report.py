@@ -36,3 +36,4 @@ class ReportExportResponse(BaseModel):
     title: str
     markdown_content: str
     file_name: str
+

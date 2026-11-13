@@ -68,3 +68,4 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({ citation, onClos
     </div>
   );
 };
+

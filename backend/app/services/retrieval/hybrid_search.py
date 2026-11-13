@@ -105,3 +105,4 @@ class HybridSearchEngine:
             "execution_time_ms": elapsed_ms,
             "results": final_results,
         }
+

@@ -42,3 +42,4 @@ class VectorType(TypeDecorator):
             except Exception:
                 return None
         return list(value)
+

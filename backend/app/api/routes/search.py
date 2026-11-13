@@ -29,3 +29,4 @@ def search(
         rerank=request.rerank,
     )
     return results
+

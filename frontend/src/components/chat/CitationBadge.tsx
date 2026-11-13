@@ -19,3 +19,4 @@ export const CitationBadge: React.FC<CitationBadgeProps> = ({ citation, onClick 
     </button>
   );
 };
+

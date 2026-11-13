@@ -53,3 +53,4 @@ def test_search_endpoint(client, auth_headers):
     data = response.json()
     assert "results" in data
     assert "execution_time_ms" in data
+

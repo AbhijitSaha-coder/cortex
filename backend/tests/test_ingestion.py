@@ -46,3 +46,4 @@ def test_duplicate_detection_hash():
 
     assert h1 == h2
     assert h1 != h3
+

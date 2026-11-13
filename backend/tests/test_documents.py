@@ -62,3 +62,4 @@ def test_upload_invalid_extension(client, auth_headers):
     response = client.post("/api/documents/upload", files=files, headers=auth_headers)
     assert response.status_code == 400
     assert "Unsupported file format" in response.json()["detail"]
+

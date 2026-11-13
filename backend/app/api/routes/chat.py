@@ -329,3 +329,4 @@ def stream_chat_message(
             yield f"data: {json.dumps(err_event)}\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+

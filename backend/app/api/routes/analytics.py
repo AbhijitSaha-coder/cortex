@@ -106,3 +106,4 @@ def get_usage_summary(
         usage_by_type=usage_by_type,
         recent_usage=recent,
     )
+

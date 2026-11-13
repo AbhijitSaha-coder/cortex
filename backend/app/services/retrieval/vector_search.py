@@ -102,3 +102,4 @@ class VectorSearchService:
 
         scored.sort(key=lambda x: x["score"], reverse=True)
         return scored[:top_k]
+

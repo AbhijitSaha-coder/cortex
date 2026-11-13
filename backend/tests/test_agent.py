@@ -48,3 +48,4 @@ def test_prompt_injection_defense():
     assert "```system" not in sanitized
     assert "<|im_start|>" not in sanitized
     assert "<|im_end|>" not in sanitized
+

@@ -49,3 +49,4 @@ def ingest_url_task(self, document_id: str, user_id: str, url: str):
         raise self.retry(exc=exc)
     finally:
         db.close()
+

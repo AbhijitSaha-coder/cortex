@@ -32,3 +32,4 @@ def test_generate_and_export_report(client, auth_headers):
     assert export_res.status_code == 200
     assert "Comprehensive Survey" in export_res.text
     assert "text/markdown" in export_res.headers.get("content-type", "")
+

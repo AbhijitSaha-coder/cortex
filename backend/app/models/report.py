@@ -30,3 +30,4 @@ class ResearchReport(Base):
     __table_args__ = (
         Index("idx_reports_user_created", "user_id", "created_at"),
     )
+

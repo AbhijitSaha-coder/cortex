@@ -71,3 +71,4 @@ def test_logout(client, auth_headers):
     response = client.post("/api/auth/logout", headers=auth_headers)
     assert response.status_code == 200
     assert "logged out" in response.json()["message"]
+

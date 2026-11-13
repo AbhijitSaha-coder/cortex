@@ -223,3 +223,4 @@ def downgrade() -> None:
     op.drop_table('documents')
     op.drop_table('refresh_tokens')
     op.drop_table('users')
+

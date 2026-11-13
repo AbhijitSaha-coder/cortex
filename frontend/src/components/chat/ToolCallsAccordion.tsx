@@ -62,3 +62,4 @@ export const ToolCallsAccordion: React.FC<ToolCallsAccordionProps> = ({ reasonin
     </div>
   );
 };
+

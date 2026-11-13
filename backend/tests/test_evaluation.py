@@ -28,3 +28,4 @@ def test_evaluation_pipeline(client, auth_headers):
     list_runs = client.get("/api/evaluations", headers=auth_headers)
     assert list_runs.status_code == 200
     assert len(list_runs.json()) > 0
+

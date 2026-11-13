@@ -58,3 +58,4 @@ class MessageCitation(Base):
     message = relationship("Message", back_populates="citations")
     chunk = relationship("DocumentChunk", back_populates="citations")
     document = relationship("Document")
+

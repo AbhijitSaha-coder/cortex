@@ -200,3 +200,4 @@ Focus Areas: {", ".join(focus_areas) if focus_areas else "Comprehensive Analysis
         self.db.refresh(report)
 
         return report
+

@@ -54,3 +54,4 @@ class ChatMessageRequest(BaseModel):
     mode: str = Field("rag", description="Execution mode: 'rag' or 'agent'")
     document_ids: Optional[List[str]] = Field(None, description="Scope query to specific documents")
     stream: bool = Field(False, description="Whether to stream the response via SSE")
+

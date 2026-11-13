@@ -101,3 +101,4 @@ def second_user(db) -> User:
 def second_auth_headers(second_user: User) -> dict:
     token = create_access_token(subject=second_user.id)
     return {"Authorization": f"Bearer {token}"}
+
