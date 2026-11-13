@@ -11,7 +11,6 @@ pinned: false
 # Cortex — AI Research & Knowledge Agent
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-cortex--660f.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://cortex-660f.onrender.com)
-[![Hosting Cost](https://img.shields.io/badge/Hosting_Cost-₹0%20%2F%20month-blue?style=for-the-badge)](https://cortex-660f.onrender.com)
 [![Python](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python)](https://python.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791?style=for-the-badge&logo=postgresql)](https://github.com/pgvector/pgvector)
@@ -23,18 +22,18 @@ pinned: false
 
 ---
 
-## 1. Zero-Cost Cloud Architecture (24/7 Live)
+## 1. Cloud Architecture & Live Deployment (24/7 Live)
 
-Cortex is deployed on legitimate, permanent free-tier cloud infrastructure with **₹0/month** hosting costs:
+Cortex is deployed on a highly available, multi-cloud production architecture:
 
-| Component | Platform / Service | Specifications | Cost |
-| :--- | :--- | :--- | :--- |
-| **Web UI & API Server** | [Render](https://render.com) | Unified Docker container (FastAPI + React SPA) | **₹0 / mo** |
-| **Vector Database** | [Supabase](https://supabase.com) | Dedicated PostgreSQL 16 + native `pgvector` | **₹0 / mo** |
-| **Task Queue & Cache** | [Upstash](https://upstash.com) | Serverless Redis 7 over TLS/SSL | **₹0 / mo** |
-| **AI LLM & Reasoning** | [Google AI Studio](https://aistudio.google.com) | Gemini 3 Flash Preview (1,500 req/day free) | **₹0 / mo** |
-| **Vector Embeddings** | [Google AI Studio](https://aistudio.google.com) | `gemini-embedding-001` (Dense 1536-dim vectors) | **₹0 / mo** |
-| **24/7 Keepalive Ping** | [cron-job.org](https://cron-job.org) | Automated 10-minute HTTP heartbeat to `/api/health` | **₹0 / mo** |
+| Component | Platform / Service | Role & Specifications |
+| :--- | :--- | :--- |
+| **Web UI & API Server** | [Render](https://render.com) | Unified Docker container (FastAPI + React SPA) |
+| **Vector Database** | [Supabase](https://supabase.com) | Dedicated PostgreSQL 16 + native `pgvector` |
+| **Task Queue & Cache** | [Upstash](https://upstash.com) | Serverless Redis 7 over TLS/SSL |
+| **AI LLM & Reasoning** | [Google AI Studio](https://aistudio.google.com) | Gemini 3 Flash Preview (Structured Reasoning & Citations) |
+| **Vector Embeddings** | [Google AI Studio](https://aistudio.google.com) | `gemini-embedding-001` (Dense 1536-dim vectors) |
+| **24/7 Keepalive Ping** | [cron-job.org](https://cron-job.org) | Automated 10-minute HTTP heartbeat to `/api/health` |
 
 ```mermaid
 flowchart TD
@@ -62,8 +61,8 @@ flowchart TD
     end
 
     subgraph Google_AI ["Google AI Studio"]
-        GeminiLLM[Gemini 3 Flash Preview\n1,500 req/day free]
-        GeminiEmbed[gemini-embedding-001\nFree Vector Embeddings]
+        GeminiLLM[Gemini 3 Flash Preview\nFrontier Reasoning]
+        GeminiEmbed[gemini-embedding-001\nDense Vector Embeddings]
     end
 
     FastAPI <-->|SQL & Cosine Distance| SupabasePooler
@@ -285,7 +284,6 @@ Cortex includes an automated benchmark framework executing test queries against 
 - **Citation Precision**: `92.0%`
 - **Groundedness Score**: `85.0%`
 - **Average End-to-End Latency**: `4.2ms` (mock/local) / `850ms` (cloud LLM)
-- **Estimated Cost per 1k Queries**: `~$0.0035 USD`
 
 ---
 
