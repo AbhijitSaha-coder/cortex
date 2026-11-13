@@ -39,11 +39,11 @@ class VectorSearchService:
                 sql = f"""
                     SELECT c.id as chunk_id, c.document_id, c.chunk_index, c.content,
                            c.page_number, d.title as document_title,
-                           1 - (c.embedding <=> :query_vec::vector) as score
+                           1 - (c.embedding <=> CAST(:query_vec AS vector)) as score
                     FROM document_chunks c
                     JOIN documents d ON c.document_id = d.id
                     WHERE c.user_id = :user_id {doc_filter_sql}
-                    ORDER BY c.embedding <=> :query_vec::vector ASC
+                    ORDER BY c.embedding <=> CAST(:query_vec AS vector) ASC
                     LIMIT :top_k
                 """
                 rows = self.db.execute(text(sql), params).fetchall()
@@ -61,6 +61,7 @@ class VectorSearchService:
                     })
                 return results
             except Exception as e:
+                self.db.rollback()
                 logger.warning(f"Native pgvector query failed ({e}), falling back to Python cosine similarity.")
 
         # SQLite / In-memory fallback

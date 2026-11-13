@@ -63,6 +63,7 @@ class KeywordSearchService:
                     })
                 return results
             except Exception as e:
+                self.db.rollback()
                 logger.warning(f"Native postgres full-text query failed ({e}), using term-frequency fallback.")
 
         # SQLite fallback: Term-frequency & keyword scoring
