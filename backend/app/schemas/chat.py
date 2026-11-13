@@ -9,7 +9,7 @@ class ConversationCreate(BaseModel):
 
 
 class CitationResponse(BaseModel):
-    id: str
+    id: Optional[str] = None
     chunk_id: Optional[str] = None
     document_id: str
     document_title: str

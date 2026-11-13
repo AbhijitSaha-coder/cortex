@@ -1,5 +1,6 @@
 import json
 import re
+import uuid
 from typing import List, Generator
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
@@ -149,7 +150,9 @@ def send_chat_message(
             citation_marker = f"[Citation {i}]"
             # Link citation if mentioned or if it was top evidence
             if citation_marker in assistant_msg.content or i <= 2:
+                cit_id = str(uuid.uuid4())
                 cit_record = MessageCitation(
+                    id=cit_id,
                     message_id=assistant_msg.id,
                     chunk_id=item["chunk_id"],
                     document_id=item["document_id"],
@@ -161,7 +164,7 @@ def send_chat_message(
                 db.add(cit_record)
                 citations_resp.append(
                     CitationResponse(
-                        id=cit_record.id,
+                        id=cit_id,
                         chunk_id=item["chunk_id"],
                         document_id=item["document_id"],
                         document_title=item["document_title"],
