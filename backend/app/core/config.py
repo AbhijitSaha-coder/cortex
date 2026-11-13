@@ -36,7 +36,8 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     
     OPENAI_MODEL: str = "gpt-4o-mini"
-    GEMINI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-3-flash-preview"
+    GEMINI_EMBEDDING_MODEL: str = "gemini-embedding-001"
     ANTHROPIC_MODEL: str = "claude-3-5-sonnet-20241022"
     
     # Embeddings

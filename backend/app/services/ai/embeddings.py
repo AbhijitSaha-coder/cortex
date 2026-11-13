@@ -77,7 +77,7 @@ class EmbeddingService:
             return [self._generate_mock_embedding(t) for t in texts]
 
         # Gemini embeddings endpoint
-        model = "text-embedding-004"
+        model = getattr(settings, "GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
         results = []
         try:
             with httpx.Client(timeout=30.0) as client:
