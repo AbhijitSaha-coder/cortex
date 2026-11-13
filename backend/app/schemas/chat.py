@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ConversationCreate(BaseModel):
@@ -18,8 +18,7 @@ class CitationResponse(BaseModel):
     page_number: Optional[int] = None
     similarity_score: Optional[float] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MessageResponse(BaseModel):
@@ -32,8 +31,7 @@ class MessageResponse(BaseModel):
     created_at: datetime
     citations: List[CitationResponse] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ConversationResponse(BaseModel):
@@ -44,8 +42,7 @@ class ConversationResponse(BaseModel):
     updated_at: datetime
     messages: Optional[List[MessageResponse]] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ChatMessageRequest(BaseModel):

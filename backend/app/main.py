@@ -29,9 +29,9 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="Production-grade AI Research & Knowledge Agent Platform featuring hybrid search, RRF, citation grounding, agent tool loops, and automated evaluations.",
-    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
-    docs_url=f"{settings.API_V1_PREFIX}/docs",
-    redoc_url=f"{settings.API_V1_PREFIX}/redoc",
+    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json" if settings.ENABLE_API_DOCS else None,
+    docs_url=f"{settings.API_V1_PREFIX}/docs" if settings.ENABLE_API_DOCS else None,
+    redoc_url=f"{settings.API_V1_PREFIX}/redoc" if settings.ENABLE_API_DOCS else None,
 )
 
 # CORS Middleware
@@ -68,9 +68,13 @@ import os
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../frontend/dist"))
+frontend_dist = os.getenv("FRONTEND_DIST", "")
+if not frontend_dist or not os.path.exists(frontend_dist):
+    frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../frontend/dist"))
 if not os.path.exists(frontend_dist):
     frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend/dist"))
+if not os.path.exists(frontend_dist):
+    frontend_dist = "/app/frontend/dist"
 
 if os.path.exists(frontend_dist):
     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")

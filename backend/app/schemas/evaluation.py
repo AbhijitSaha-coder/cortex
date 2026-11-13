@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EvaluationSample(BaseModel):
@@ -23,8 +23,7 @@ class EvaluationDatasetResponse(BaseModel):
     sample_count: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EvaluationRunRequest(BaseModel):
@@ -49,6 +48,5 @@ class EvaluationRunResponse(BaseModel):
     results: Optional[List[Dict[str, Any]]] = None
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 

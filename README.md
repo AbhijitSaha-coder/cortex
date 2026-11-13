@@ -1,3 +1,13 @@
+---
+title: Cortex AI Research Agent
+emoji: 🧠
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Cortex — AI Research & Knowledge Agent
 
 > A production-grade personal research and knowledge management platform featuring multi-source ingestion, hybrid vector/keyword retrieval, Reciprocal Rank Fusion (RRF), controlled agent tool execution loops, verifiable source citations, and empirical RAG benchmarking.

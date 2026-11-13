@@ -4,52 +4,65 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     container_name: cortex_postgres
-    restart: always
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: cortex
-      POSTGRES_USER: cortex
-      POSTGRES_PASSWORD: cortex_password
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-cortex}
+      POSTGRES_USER: ${POSTGRES_USER:-cortex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cortex_secure_password}
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cortex -d cortex"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-cortex} -d $${POSTGRES_DB:-cortex}"]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    networks:
+      - cortex_network
 
   redis:
     image: redis:7-alpine
     container_name: cortex_redis
-    restart: always
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - cortex_network
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: cortex_backend
-    restart: always
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
+    expose:
+      - "8000"
     environment:
-      - ENVIRONMENT=production
-      - DEBUG=false
-      - DATABASE_URL=postgresql://cortex:cortex_password@postgres:5432/cortex
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - DEBUG=${DEBUG:-false}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-cortex}:${POSTGRES_PASSWORD:-cortex_secure_password}@postgres:5432/${POSTGRES_DB:-cortex}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
       - TASK_ALWAYS_EAGER=false
-      - SECRET_KEY=cortex-production-super-secret-key-32-chars-min
-      - DEFAULT_LLM_PROVIDER=mock
-      - DEFAULT_EMBEDDING_PROVIDER=mock
+      - SECRET_KEY=${SECRET_KEY}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - DEFAULT_EMBEDDING_PROVIDER=${DEFAULT_EMBEDDING_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
+      - ENABLE_API_DOCS=${ENABLE_API_DOCS:-true}
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,44 +70,88 @@ services:
         condition: service_healthy
     volumes:
       - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - cortex_network
 
   celery_worker:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: cortex_celery_worker
-    restart: always
-    command: ["celery", "-A", "app.workers.celery_app.celery_app", "worker", "--loglevel=info"]
+    restart: unless-stopped
+    command: ["celery", "-A", "app.workers.celery_app.celery_app", "worker", "--loglevel=info", "--concurrency=2"]
     environment:
-      - ENVIRONMENT=production
-      - DATABASE_URL=postgresql://cortex:cortex_password@postgres:5432/cortex
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - DEBUG=${DEBUG:-false}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-cortex}:${POSTGRES_PASSWORD:-cortex_secure_password}@postgres:5432/${POSTGRES_DB:-cortex}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
       - TASK_ALWAYS_EAGER=false
-      - SECRET_KEY=cortex-production-super-secret-key-32-chars-min
-      - DEFAULT_LLM_PROVIDER=mock
-      - DEFAULT_EMBEDDING_PROVIDER=mock
+      - SECRET_KEY=${SECRET_KEY}
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-gemini}
+      - DEFAULT_EMBEDDING_PROVIDER=${DEFAULT_EMBEDDING_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      backend:
+        condition: service_healthy
     volumes:
       - backend_uploads:/app/uploads
+    networks:
+      - cortex_network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: cortex_frontend
-    restart: always
+    restart: unless-stopped
     ports:
-      - "5173:80"
+      - "${PORT:-80}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    networks:
+      - cortex_network
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cortex_tunnel
+    restart: unless-stopped
+    profiles:
+      - tunnel
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      frontend:
+        condition: service_healthy
+    networks:
+      - cortex_network
 
 volumes:
   postgres_data:
+  redis_data:
   backend_uploads:
 
+networks:
+  cortex_network:
+    driver: bridge
