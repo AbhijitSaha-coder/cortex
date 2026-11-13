@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List, Union
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -74,6 +74,22 @@ class Settings(BaseSettings):
 
     # Documentation
     ENABLE_API_DOCS: bool = True
+
+    @model_validator(mode="after")
+    def clean_and_normalize_settings(self):
+        if self.DATABASE_URL:
+            self.DATABASE_URL = self.DATABASE_URL.strip("\"' ")
+        if self.REDIS_URL:
+            self.REDIS_URL = self.REDIS_URL.strip("\"' ")
+        if not self.CELERY_BROKER_URL:
+            self.CELERY_BROKER_URL = self.REDIS_URL or "redis://localhost:6379/0"
+        else:
+            self.CELERY_BROKER_URL = self.CELERY_BROKER_URL.strip("\"' ")
+        if not self.CELERY_RESULT_BACKEND:
+            self.CELERY_RESULT_BACKEND = self.REDIS_URL or "redis://localhost:6379/0"
+        else:
+            self.CELERY_RESULT_BACKEND = self.CELERY_RESULT_BACKEND.strip("\"' ")
+        return self
 
     model_config = SettingsConfigDict(
         env_file=".env",

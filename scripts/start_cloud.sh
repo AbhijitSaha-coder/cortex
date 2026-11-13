@@ -15,7 +15,7 @@ fi
 
 # 2. Start Celery worker in background
 echo "Starting Celery background worker..."
-celery -A app.workers.celery_app.celery_app worker --loglevel=info --concurrency=2 &
+celery -A app.workers.celery_app.celery_app worker --loglevel=info --concurrency=1 &
 
 # 3. Start Uvicorn FastAPI server in foreground on PORT (default: 7860)
 PORT="${PORT:-7860}"
